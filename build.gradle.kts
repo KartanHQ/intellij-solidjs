@@ -1,15 +1,17 @@
 import org.jetbrains.changelog.Changelog
 
+fun properties(key: String) = project.findProperty(key).toString()
+
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.7.20"
-    id("org.jetbrains.intellij") version "1.13.1"
+    id("org.jetbrains.kotlin.jvm") version "1.8.20"
+    id("org.jetbrains.intellij") version "1.13.3"
     // Gradle Changelog Plugin
     id("org.jetbrains.changelog") version "2.0.0"
 }
 
-group = "com.nekofar.milad"
-version = "1.0.0-alpha.0"
+group = properties("pluginGroup")
+version = properties("pluginVersion")
 
 repositories {
     mavenCentral()
@@ -18,17 +20,19 @@ repositories {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2021.3")
-    type.set("IU") // Target IDE Platform
+    pluginName.set(properties("pluginName"))
+    version.set(properties("platformVersion"))
+    type.set(properties("platformType"))
 
-    plugins.set(listOf("JavaScript"))
+    // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
+    plugins.set(properties("platformPlugins").split(',').map(String::trim).filter(String::isNotEmpty))
 }
 
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
-    version.set("1.0.0-alpha.0")
+    version.set(properties("pluginVersion"))
     groups.set(emptyList())
-    repositoryUrl.set("https://github.com/KartanHQ/intellij-remix")
+    repositoryUrl.set(properties("pluginRepositoryUrl"))
 }
 
 tasks {
@@ -41,10 +45,14 @@ tasks {
         kotlinOptions.jvmTarget = "11"
     }
 
+    buildSearchableOptions {
+        enabled = false
+    }
+
     patchPluginXml {
-        version.set("1.0.0-alpha.0")
-        sinceBuild.set("213")
-        untilBuild.set("231.*")
+        version.set(properties("pluginVersion"))
+        sinceBuild.set(properties("pluginSinceBuild"))
+        untilBuild.set(properties("pluginUntilBuild"))
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
         pluginDescription.set(
@@ -62,7 +70,7 @@ tasks {
         // Get the latest available change notes from the changelog file
         changeNotes.set(provider {
             with(changelog) {
-                val changelogItem = getOrNull("1.0.0-alpha.0")
+                val changelogItem = getOrNull(properties("pluginVersion"))
                     ?: runCatching { getLatest() }.getOrElse { getUnreleased() }
                 renderItem(
                     changelogItem.withHeader(false),
@@ -79,6 +87,11 @@ tasks {
     }
 
     publishPlugin {
+        dependsOn("patchChangelog")
         token.set(System.getenv("PUBLISH_TOKEN"))
+        // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
+        // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
+        // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
+        channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
     }
 }
