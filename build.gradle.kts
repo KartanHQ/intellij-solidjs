@@ -3,22 +3,33 @@ import org.jetbrains.changelog.Changelog
 fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
-    id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.8.21"
-    id("org.jetbrains.intellij") version "1.14.1"
-    // Gradle Changelog Plugin
-    id("org.jetbrains.changelog") version "2.1.0"
+    id("java") // Java support
+    alias(libs.plugins.kotlin) // Kotlin support
+    alias(libs.plugins.gradleIntelliJPlugin) // Gradle IntelliJ Plugin
+    alias(libs.plugins.changelog) // Gradle Changelog Plugin
+    alias(libs.plugins.qodana) // Gradle Qodana Plugin
+    alias(libs.plugins.kover) // Gradle Kover Plugin
 }
 
 group = properties("pluginGroup")
 version = properties("pluginVersion")
 
+// Configure project's dependencies
 repositories {
     mavenCentral()
 }
 
-// Configure Gradle IntelliJ Plugin
-// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
+// Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
+dependencies {
+//    implementation(libs.annotations)
+}
+
+// Set the JVM language level used to build the project. Use Java 11 for 2020.3+, and Java 17 for 2022.2+.
+kotlin {
+    jvmToolchain(17)
+}
+
+// Configure Gradle IntelliJ Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
     pluginName.set(properties("pluginName"))
     version.set(properties("platformVersion"))
