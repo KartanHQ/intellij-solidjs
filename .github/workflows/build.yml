@@ -64,6 +64,13 @@ jobs:
       - name: Gradle Wrapper Validation
         uses: gradle/wrapper-validation-action@v1.0.6
 
+      # Setup Java environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v3.12.0
+        with:
+          distribution: zulu
+          java-version: 17
+
       # Setup Gradle
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2.7.0
@@ -136,6 +143,13 @@ jobs:
       - name: Fetch Sources
         uses: actions/checkout@v3.5.3
 
+      # Setup Java environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v3.12.0
+        with:
+          distribution: zulu
+          java-version: 17
+
       # Setup Gradle
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2.7.0
@@ -195,6 +209,13 @@ jobs:
       # Check out current repository
       - name: Fetch Sources
         uses: actions/checkout@v3.5.3
+
+      # Setup Java environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v3.12.0
+        with:
+          distribution: zulu
+          java-version: 17
 
       # Remove old release drafts by using the curl request for the available releases with a draft flag
       - name: Remove Old Release Drafts
