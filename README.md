@@ -16,5 +16,5 @@ Whether you're a seasoned pro or just starting out, makes it easy to speed up th
 
 ## Installation
 
-To install plugin open `Preferences > Plugins > Marketplace`, and search for Solid.
+For plugin installation, navigate to `Preferences`, then `Plugins`, and finally `Marketplace`. In the search bar, enter `Solid`.
 
