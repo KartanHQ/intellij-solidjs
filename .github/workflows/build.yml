@@ -62,7 +62,7 @@ jobs:
 
       # Validate wrapper
       - name: Gradle Wrapper Validation
-        uses: gradle/wrapper-validation-action@v1.0.6
+        uses: gradle/wrapper-validation-action@v1.1.0
 
       # Setup Java environment for the next steps
       - name: Setup Java
@@ -274,7 +274,7 @@ jobs:
 
       # Create a new release draft which is not publicly visible and requires manual acceptance
       - name: Create Release Draft
-        uses: nekofar/create-github-release@v1.0.8
+        uses: nekofar/create-github-release@v1.0.12
         with:
           tag: v${{ needs.build.outputs.version }} # The name of the tag to be released
           title: v${{ needs.build.outputs.version }} # The title for the release
