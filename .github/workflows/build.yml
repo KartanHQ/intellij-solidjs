@@ -63,7 +63,7 @@ jobs:
       - name: Gradle Wrapper Validation
         uses: gradle/actions/wrapper-validation@v4.1.0
 
-      # Setup Java environment for the next steps
+      # Set up Java environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v4.4.0
         with:
@@ -162,7 +162,7 @@ jobs:
       - name: Upload Code Coverage Report
         uses: codecov/codecov-action@v4.6.0
         with:
-          files: ${{ github.workspace }}/build/reports/kover/xml/report.xml
+          files: ${{ github.workspace }}/build/reports/kover/report.xml
 
   # Run Qodana inspections and provide report
   inspectCode:
@@ -220,7 +220,7 @@ jobs:
       - name: Fetch Sources
         uses: actions/checkout@v4.2.0
 
-      # Setup Java environment for the next steps
+      # Set up Java environment for the next steps
       - name: Setup Java
         uses: actions/setup-java@v4.4.0
         with:
